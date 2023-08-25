@@ -129,3 +129,26 @@ void Maindialog::on_pb_login_login_clicked()
     Q_EMIT SIG_loginCommit(tel,password);
 }
 
+
+//手机号输入完毕后的动态检测是否正确
+void Maindialog::on_le_tel_register_editingFinished()
+{
+    QRegExp pt("^1[3-8][0-9]{9}");  //正则类型,用于匹配手机号
+    QString tel = ui->le_tel_register->text();
+    if(!pt.exactMatch(tel) || tel.size()!=11)   //整串匹配成功才能返回true，否则都返回false
+    {
+        QMessageBox::information(this,"提示","请输入合法的手机号!",QMessageBox::Ok);
+        ui->le_tel_register->setText("");
+    }
+}
+
+void Maindialog::on_le_tel_login_editingFinished()
+{
+    QRegExp pt("^1[3-8][0-9]{9}");  //正则类型,用于匹配手机号
+    QString tel = ui->le_tel_login->text();
+    if(!pt.exactMatch(tel) || tel.size()!=11)   //整串匹配成功才能返回true，否则都返回false
+    {
+        QMessageBox::information(this,"提示","请输入合法的手机号!",QMessageBox::Ok);
+        ui->le_tel_register->setText("");
+    }
+}

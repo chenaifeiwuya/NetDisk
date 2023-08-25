@@ -13,6 +13,7 @@
 #include <QStringList>
 #include <QInputDialog>
 
+
 class cKernel;
 namespace Ui {
 class MainWindow;
@@ -56,6 +57,8 @@ private slots:
     FileInfo slot_getDownloadFileInfoByTimestamp(int timestamp);
     FileInfo slot_getUploadFileInfoByTimestamp(int timestamp);
 
+    //显示每一个文件的传输速度
+    void slot_showSpeed(std::map<int,FileInfo>& mp);
 
 
 
@@ -94,6 +97,8 @@ private slots:
 
     void on_table_upload_cellClicked(int row, int column);
 
+    void on_le_limit_editingFinished();
+
 signals:
     void SIG_uploadFile(QString,QString);    //第一个QString是需要上传的文件的路径， 第二个是希望保存到服务器的哪个目录下
     void SIG_close();
@@ -110,6 +115,8 @@ signals:
     void SIG_setUploadPause(int timestamp, int isPause);
     //设置下载暂停 0开始  1暂停
     void SIG_setDownloadPause(int timestamp , int isPause);
+    //更新上传下载进度
+    void SIG_updateLimitSize(int newLimit);
 private:
     Ui::MainWindow *ui;
 

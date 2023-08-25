@@ -94,11 +94,15 @@ typedef struct STRU_LOGIN_RS
 
 
 ////////////////////文件信息/////////////////
+#define ONE_SECOND 1000    //定时器每一秒触发一次
 struct FileInfo
 {
 
     FileInfo():fileid(0) , size(0),pFile( nullptr )
-      , pos(0) , isPause(0),timestamp(0){
+      , pos(0) , isPause(0),timestamp(0),secondSize(0){
+
+    }
+    ~FileInfo(){
 
     }
 
@@ -117,18 +121,19 @@ struct FileInfo
 
     //文件指针
     FILE* pFile;
+    int secondSize;    //用于记录文件一秒钟传输速度是多少
 
     static QString getSize(int size)  //得到 ..kb  ...MB
     {
         QString res;
         int count=0;
-        int tmp=size;
-        while(tmp >= 1024)
+        float num=size;
+        while(num >= 1024)
         {
-            tmp /= 1024;
+            num /= 1024;
             count++;
         }
-
+        QString tmp =QString::number(num,'f',1);
         switch(count)
         {
         case 0:

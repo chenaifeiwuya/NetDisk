@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QCloseEvent>
+#include <QRegEXP>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Maindialog; }
@@ -30,6 +31,10 @@ private slots:
     void on_pb_clear_login_clicked();
 
     void on_pb_login_login_clicked();
+
+    void on_le_tel_register_editingFinished();
+
+    void on_le_tel_login_editingFinished();
 
 private:
     Ui::Maindialog *ui;

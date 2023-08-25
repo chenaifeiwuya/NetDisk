@@ -587,6 +587,28 @@ FileInfo MainWindow::slot_getUploadFileInfoByTimestamp(int timestamp)
     }
 }
 
+void MainWindow::slot_showSpeed(std::map<int,FileInfo>&mp)
+{
+    //遍历所有第0列，查看时间戳能对上的
+
+        int rows=ui->table_upload->rowCount();
+        for(int i=0;i<rows; ++i)
+        {
+            MyTableWidgetItem* item0=(MyTableWidgetItem *)ui->table_upload->item(i,0);
+            if(mp.count(item0->m_info.timestamp) > 0)
+            {
+                //只要map中存在，就更新其网速
+                 int secondSize = mp[item0->m_info.timestamp].secondSize;
+                 QString speedSize = FileInfo::getSize(secondSize);
+                 QTableWidgetItem *item3 = (MyTableWidgetItem *)ui->table_upload->item(i,3);
+                 speedSize = speedSize.mid(0,3) + speedSize.mid(speedSize.size()-3,3);
+                 item3 ->setText(QString("%1/s").arg(speedSize));
+                 mp[item0->m_info.timestamp].secondSize=0;   //显示完成后，当前秒的传输大小归0
+            }
+
+        }
+}
+
 
 
 void MainWindow::on_pb_file_clicked()
@@ -755,4 +777,11 @@ void MainWindow::on_table_upload_cellClicked(int row, int column)
         item0->setCheckState(Qt::Unchecked);
     else
         item0->setCheckState(Qt::Checked);
+}
+
+void MainWindow::on_le_limit_editingFinished()
+{
+    QString limitSize = ui->le_limit->text();
+    int size = atoi(limitSize.toStdString().c_str());
+    Q_EMIT SIG_updateLimitSize(size);
 }

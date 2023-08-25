@@ -43,6 +43,13 @@ cKernel::cKernel(QObject *parent) : QObject(parent)
     connect(m_MainWindow,SIGNAL(SIG_deleteFile(QVector<int>,QString)),this,SLOT(slot_deleteFile(QVector<int>,QString)));
     connect(m_MainWindow,SIGNAL(SIG_setUploadPause(int,int)), this,SLOT(slot_setUploadPause(int,int)));
     connect(m_MainWindow,SIGNAL(SIG_setDownloadPause(int,int)), this,SLOT(slot_setDownloadPause(int,int)));
+    connect(m_MainWindow,SIGNAL(SIG_updateLimitSize(int)),this,SLOT(slot_updateLimitSize(int)));
+
+
+    connect(&timer,SIGNAL(timeout()),this,SLOT(slot_showSpeed()));
+    timer.setInterval(1000);  //间隔为1s
+    timer.start();
+    limitSize = 0;   //0表示不限速,默认限速大小为不限速
 }
 
 
@@ -191,6 +198,7 @@ void cKernel::setSystempath()
 
 void cKernel::slot_destroy()  //回收资源的槽函数
 {
+    timer.stop();
     qDebug()<<__func__;
     m_quit=true;
     delete m_MainDialog;
@@ -591,6 +599,7 @@ void cKernel::slot_dealFileContentRs(unsigned int lSendIp, char *buf, int nlen)
         else{
             //真 pos+len
             info.pos += rs->len;
+            info.secondSize += rs->len;
             //更新上传进度
             //方案一:写信号槽  因为考虑到多线程
             //方案二：直接调用  一定要当前函数在主线程
@@ -607,6 +616,13 @@ void cKernel::slot_dealFileContentRs(unsigned int lSendIp, char *buf, int nlen)
                 //更新文件列表
                 slot_refreshPageInfo(m_curDir);
                 return;
+            }
+            while(info.secondSize >= limitSize && limitSize!=0)
+            {
+                //sleep();
+                QThread::msleep(100);
+                //为了避免阻塞窗口线程，影响事件循环， 加入下面的处理，蒋信号取出并执行
+                QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
             }
         }
         //判断是否暂停
@@ -627,7 +643,7 @@ void cKernel::slot_dealFileContentRs(unsigned int lSendIp, char *buf, int nlen)
             而如果不想使用多线程，最简单的办法就是在文件保存过程中频繁调用QApplication::processEvents()。
             该函数的作用是让程序处理那些还没有处理的事件，然后再把使用权返回给调用者。
              * */
-            //避免程序退出一致卡在这里
+            //避免程序退出一直卡在这里
             if(m_quit) return;  //当程序退出的时候，此函数也直接返回
         }
 
@@ -755,6 +771,7 @@ void cKernel::slot_dealFileContentRq(unsigned int lSendIP, char *buf, int nlen)
         //成功 pos+=len
         rs.result = 1;
         info.pos += len;
+        info.secondSize += len;
         //更新进度 todo
         Q_EMIT SIG_updateDownloadFileProgress(info.pos , rq->timestamp);
 
@@ -764,6 +781,13 @@ void cKernel::slot_dealFileContentRq(unsigned int lSendIP, char *buf, int nlen)
             //结束  关闭文件 回收
             fclose(info.pFile);
             m_mapTimestampToFileInfo.erase(rq->timestamp);
+        }
+        while(info.secondSize >= limitSize && limitSize != 0)
+        {
+            //sleep();
+            QThread::msleep(100);
+            //为了避免阻塞窗口线程，影响事件循环， 加入下面的处理，蒋信号取出并执行
+            QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
         }
     }
     //判断是否暂停
@@ -999,6 +1023,18 @@ void cKernel::slot_setDownloadPause(int timestamp, int isPause)
 
         }
     }
+}
+
+//显示每个上传下载的进度s
+void cKernel::slot_showSpeed()
+{
+    m_MainWindow->slot_showSpeed(m_mapTimestampToFileInfo);
+
+}
+
+void cKernel::slot_updateLimitSize(int newLimit)
+{
+    limitSize = newLimit * 1024;
 }
 
 void cKernel::slot_writeUploadTask(FileInfo &info)

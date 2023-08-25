@@ -14,6 +14,8 @@
 #include "md5.h"
 #include "csqlite.h"
 #include <QDir>
+#include <QTimer>
+
 
 
 //核心处理类
@@ -70,6 +72,10 @@ private slots:      //普通槽函数
     void slot_dealDeleteFileRs(unsigned int lSendIp, char *buf, int nlen);
     void slot_setUploadPause(int timestamp, int isPause);
     void slot_setDownloadPause(int timestamp, int isPause);
+    //定时器槽函数,用于显示上传下载的速度，并且清空当前秒的下载进度
+    void slot_showSpeed();
+    //更新传输速度的限制
+    void slot_updateLimitSize(int newLimit);
 
 //数据库相关槽函数
     //缓存上传的任务
@@ -126,6 +132,12 @@ public:
 
     //数据库
     CSqlite* m_sql;
+
+    //定时器，用于计算文件传输速度
+    QTimer timer;
+
+    //主动限速大小
+    int limitSize;   //限速大小，默认为不限速
 private:
 
 
