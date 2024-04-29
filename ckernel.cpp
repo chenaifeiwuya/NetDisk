@@ -4,9 +4,8 @@
 #include <QSettings>
 cKernel::cKernel(QObject *parent) : QObject(parent)
 {
+
     m_sql = new CSqlite;
-
-
     m_quit=false;
     setSystempath();
     m_MainDialog=new Maindialog;
@@ -18,7 +17,7 @@ cKernel::cKernel(QObject *parent) : QObject(parent)
     m_tcpClient = new TcpClientMediator;
     connect(m_tcpClient, SIGNAL(SIG_ReadyData(uint,char*,int)), this, SLOT(slot_dealClientData(uint,char*,int)));
     //客户端连接真实地址
-    m_tcpClient->OpenNet("192.168.174.131");   //端口是一个有默认值的参数
+    m_tcpClient->OpenNet("192.168.174.134");   //端口是一个有默认值的参数
 
 #ifdef USE_SERVER
     m_tcpServer = new TcpServerMediator;
@@ -681,6 +680,7 @@ void cKernel::slot_dealGetFileInfoRs(unsigned int lSendIp, char *buf, int nlen)
 
         //插入到控件中
         m_MainWindow->slot_insertFileInfo(info);
+        m_MainWindow->slot_insertExploreGameInfo(info);
     }
 }
 
@@ -1037,6 +1037,8 @@ void cKernel::slot_updateLimitSize(int newLimit)
     limitSize = newLimit * 1024;
 }
 
+
+
 void cKernel::slot_writeUploadTask(FileInfo &info)
 {
     QString sqlbuf = QString("insert into t_upload values(%1, %2, '%3',  '%4', '%5', %6, '%7','%8','%9');")\
@@ -1286,6 +1288,33 @@ void cKernel::slot_dealContinueUploadRs(unsigned int lSendIp, char *buf, int nle
 
     SendData((char*)&rq,sizeof(rq));
 
+}
+
+//获取游戏商城的信息
+void cKernel::slot_dealGetGameStoryInfo(unsigned int lSendIp, char *buf, int nlen)
+{
+    //拆包
+    STRU_GET_FILE_INFO_RS* rs=(STRU_GET_FILE_INFO_RS*)buf;
+    if(m_curDir != QString::fromStdString(rs->dir)) return;
+
+    //先删除原来的
+    m_MainWindow->slot_deleteAllExploreGameInfo();
+    //获取元素
+    int count = rs->count;
+    for(int i=0;i<count;i++)
+    {
+        FileInfo info;
+
+        info.fileid = rs->fileInfo[i].fileid;
+        info.type = QString::fromStdString(rs->fileInfo[i].fileType);
+        info.name = QString::fromStdString(rs->fileInfo[i].name);
+        info.fileid = rs->fileInfo[i].fileid ;
+        info.size = rs->fileInfo[i].size;
+        info.time = rs->fileInfo[i].time;
+
+        //插入到控件中
+        m_MainWindow->slot_insertFileInfo(info);
+    }
 }
 
 #ifdef USE_SERVER

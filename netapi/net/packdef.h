@@ -290,6 +290,7 @@ struct STRU_GET_FILE_INFO_RS
 
     PackType type;
     char dir[_MAX_PATH_SIZE];
+    int infotype=0;    //再添加一个type用于确认info的种类,为0时为默认信息
     int count;
     //文件信息数组
     STRU_FILE_INFO fileInfo[];  //柔性数组

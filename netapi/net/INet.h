@@ -4,7 +4,9 @@
 
 //加载动态库的引入库
 //#pragma comment(lib, "ws2_32.lib")  vs 特定的
-#include<ws2tcpip.h>
+//Qt中使用：QT += network
+
+//#include<ws2tcpip.h>   //在Qt中进行网络编程也不需要包含此头文件
 #include<process.h>
 
 //#include"packdef.h"

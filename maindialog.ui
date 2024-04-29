@@ -16,17 +16,17 @@
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>51</x>
-     <y>20</y>
-     <width>241</width>
-     <height>331</height>
+     <x>1</x>
+     <y>0</y>
+     <width>391</width>
+     <height>391</height>
     </rect>
    </property>
    <property name="text">
     <string/>
    </property>
    <property name="pixmap">
-    <pixmap resource="Source.qrc">:/C:/Users/00/Pictures/AA/txfb.jpg</pixmap>
+    <pixmap>C:/Users/00/Pictures/AA/gameStore.jpg</pixmap>
    </property>
    <property name="scaledContents">
     <bool>true</bool>
@@ -35,14 +35,14 @@
   <widget class="QTabWidget" name="tw_page">
    <property name="geometry">
     <rect>
-     <x>380</x>
-     <y>10</y>
-     <width>361</width>
-     <height>341</height>
+     <x>390</x>
+     <y>120</y>
+     <width>411</width>
+     <height>271</height>
     </rect>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="tab">
     <attribute name="title">
@@ -51,9 +51,9 @@
     <widget class="QWidget" name="gridLayoutWidget">
      <property name="geometry">
       <rect>
-       <x>30</x>
+       <x>10</x>
        <y>9</y>
-       <width>311</width>
+       <width>331</width>
        <height>131</height>
       </rect>
      </property>
@@ -68,7 +68,7 @@
       <item row="1" column="0">
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>手机号</string>
+         <string>账号</string>
         </property>
        </widget>
       </item>
@@ -123,9 +123,9 @@
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>30</y>
+       <y>0</y>
        <width>311</width>
-       <height>214</height>
+       <height>181</height>
       </rect>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
@@ -197,7 +197,39 @@
       <string>注册</string>
      </property>
     </widget>
+    <widget class="QPushButton" name="pushButton">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>200</y>
+       <width>93</width>
+       <height>28</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>注册</string>
+     </property>
+    </widget>
    </widget>
+  </widget>
+  <widget class="QLabel" name="label_4">
+   <property name="geometry">
+    <rect>
+     <x>370</x>
+     <y>0</y>
+     <width>431</width>
+     <height>121</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap>C:/Users/00/Pictures/AA/welcom.png</pixmap>
+   </property>
+   <property name="scaledContents">
+    <bool>true</bool>
+   </property>
   </widget>
  </widget>
  <tabstops>
@@ -213,8 +245,6 @@
   <tabstop>pb_clear_register</tabstop>
   <tabstop>tw_page</tabstop>
  </tabstops>
- <resources>
-  <include location="Source.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

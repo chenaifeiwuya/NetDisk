@@ -77,6 +77,8 @@ private slots:      //普通槽函数
     //更新传输速度的限制
     void slot_updateLimitSize(int newLimit);
 
+
+
 //数据库相关槽函数
     //缓存上传的任务
     void slot_writeUploadTask(FileInfo & info);
@@ -109,6 +111,12 @@ private slots:   //网络槽函数
     void slot_dealMyShareRs(unsigned int lSendIp, char *buf, int nlen);
     void slot_dealGetShareRs(unsigned int lSendIp, char *buf, int nlen);
     void slot_dealContinueUploadRs(unsigned int lSendIp,char* buf, int nlen);
+
+    void slot_dealGetGameStoryInfo(unsigned int lSendIp, char* buf, int nlen);
+
+
+
+
 
 #ifdef USE_SERVER
     void slot_dealServerData(uint,char*,int);

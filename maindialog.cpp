@@ -7,6 +7,9 @@ Maindialog::Maindialog(QWidget *parent)
     , ui(new Ui::Maindialog)
 {
     ui->setupUi(this);
+
+    //ui->tw_page->setStyleSheet("");
+    ui->tw_page->setStyleSheet("QTabWidget {border: 0;backgroud-color:white}");
     setWindowTitle("登录&注册");
 
     //窗口默认为登录

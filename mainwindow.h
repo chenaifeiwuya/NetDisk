@@ -12,7 +12,11 @@
 #include <QProcess>
 #include <QStringList>
 #include <QInputDialog>
+#include <mygameitem.h>
 
+
+
+#define GAME_COLUMNS 3
 
 class cKernel;
 namespace Ui {
@@ -59,6 +63,9 @@ private slots:
 
     //显示每一个文件的传输速度
     void slot_showSpeed(std::map<int,FileInfo>& mp);
+    //game story:
+    void slot_deleteAllExploreGameInfo();
+    void slot_insertExploreGameInfo(FileInfo &info);
 
 
 
@@ -99,6 +106,12 @@ private slots:
 
     void on_le_limit_editingFinished();
 
+
+
+    void on_pb_store_clicked();
+
+    void on_pb_hsz_clicked();
+
 signals:
     void SIG_uploadFile(QString,QString);    //第一个QString是需要上传的文件的路径， 第二个是希望保存到服务器的哪个目录下
     void SIG_close();
@@ -126,6 +139,10 @@ private:
     QMenu m_menuUpload;
 
     friend class cKernel;
+
+    uint8_t columns;
+
+    uint8_t gameStoryColumns;
 };
 
 #endif // MAINWINDOW_H

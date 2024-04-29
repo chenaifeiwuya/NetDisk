@@ -6,6 +6,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+
     ui->setupUi(this);
     //默认文件分页
     ui->sw_page->setCurrentWidget(ui->page_file);
@@ -16,6 +17,13 @@ MainWindow::MainWindow(QWidget *parent) :
     //设置最小最大化
     this->setWindowFlags(Qt::WindowMinMaxButtonsHint|Qt::WindowCloseButtonHint);
 
+    this->setStyleSheet("background-color: white;");  //设置无边框，设置背景为白色
+    ui->page_file->setStyleSheet("QTableWidget {border: 0;backgroud-color:white}");  //设置无边框，设置背景为白色
+    ui->page_share->setStyleSheet("QTableWidget {border: 0;backgroud-color:white}");
+     ui->page_share->setStyleSheet("QWidget {border: 0;backgroud-color:white}");
+    ui->page_rubsh->setStyleSheet("QTableWidget {border: 0;backgroud-color:white}");
+    ui->page_story->setStyleSheet("QTableWidget {border: 0;backgroud-color:white}");
+    ui->page_transmit->setStyleSheet("QTableWidget {border: 0;backgroud-color:white}");
     //首先定义菜单项   资源路径 :/(这里暂时不设置ICON)
     QAction * action_addFolder = new QAction(QString("新建文件夹"),this);
     QAction * action_uploadFie = new QAction(QString("上传文件"),this);
@@ -83,6 +91,14 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(actionDownloadResume,SIGNAL(triggered(bool)), this, SLOT(slot_downloadResume(bool)));
     ui->table_download->setContextMenuPolicy(Qt::CustomContextMenu);   //构造函数中添加此语句，使能待增加右键菜单功能的控件，否则在控件上无法弹出右键菜单；
     ui->table_upload->setContextMenuPolicy(Qt::CustomContextMenu);   //构造函数中添加此语句，使能待增加右键菜单功能的控件，否则在控件上无法弹出右键菜单；
+
+    columns=0;
+    gameStoryColumns=0;
+
+
+
+
+
 
 }
 
@@ -355,6 +371,7 @@ void MainWindow::slot_insertDownloadComplete(FileInfo &info)
 
     QTableWidgetItem *item1=new QTableWidgetItem(FileInfo::getSize(info.size));
     ui->table_complete->setItem(rows, 1, item1);
+    //item1->setCheckState(Qt::Checked);
 
     QTableWidgetItem *item2=new QTableWidgetItem(info.time);
     ui->table_complete->setItem(rows, 2, item2);
@@ -587,6 +604,8 @@ FileInfo MainWindow::slot_getUploadFileInfoByTimestamp(int timestamp)
     }
 }
 
+
+
 void MainWindow::slot_showSpeed(std::map<int,FileInfo>&mp)
 {
     //遍历所有第0列，查看时间戳能对上的
@@ -607,6 +626,69 @@ void MainWindow::slot_showSpeed(std::map<int,FileInfo>&mp)
             }
 
         }
+}
+
+void MainWindow::slot_deleteAllExploreGameInfo()
+{
+    int rows = ui->table_explore->rowCount();
+    for(int i=rows-1;i>=0;i--)
+    {
+        ui->table_file->removeRow(i);
+    }
+}
+
+void MainWindow::slot_insertExploreGameInfo(FileInfo &info)
+{
+    //表格插入信息
+    //列：文件  大小  时间  网速 进度  暂停
+    //1：新增一行  获取当前行+1  设置行数
+    int rows = ui->table_explore->rowCount();   //获取控件当前行数
+    //查看当前添加到第几列了，每一列只能添加三个
+    if(gameStoryColumns == 0)
+    {
+        //说明上一行已经添加满了，需要添加新的行数了
+        ui->table_explore->setRowCount(rows+1);     //设置行数+1
+    }
+
+    if(++gameStoryColumns==3)
+        gameStoryColumns=0;
+    //在当前行的当前列添加item
+    myGameItem *item = new myGameItem;
+    item->slot_setInfo(info);
+    ui->table_explore->setCellWidget(rows,gameStoryColumns,item);
+    ui->table_explore->resizeColumnsToContents();
+    ui->table_explore->resizeRowsToContents();
+
+    /*
+    ui->table_explore->setRowCount(rows+1);     //设置行数+1
+    //2：设置这一行的每一列控件（添加对象）
+    MyTableWidgetItem *item0=new MyTableWidgetItem;
+    item0->slot_setInfo(info);
+    ui->table_upload->setItem(rows, 0, item0);
+
+    QTableWidgetItem *item1=new QTableWidgetItem(FileInfo::getSize(info.size));
+    ui->table_upload->setItem(rows, 1, item1);
+
+    QTableWidgetItem *item2=new QTableWidgetItem(info.time);
+    ui->table_upload->setItem(rows, 2, item2);
+
+
+    QTableWidgetItem *item3=new QTableWidgetItem("0kB");   //网速
+    ui->table_upload->setItem(rows, 3, item3);
+    //进度条
+    QProgressBar* progress = new QProgressBar;
+    progress->setMaximum(info.size);
+    ui->table_upload->setCellWidget(rows, 4, progress);
+    //暂停按钮
+    QPushButton * button = new QPushButton;
+    if(info.isPause){
+            button->setText("开始");
+        }
+    else{
+        button->setText("暂停");
+    }
+        ui->table_upload->setCellWidget(rows,5,button);
+        */
 }
 
 
@@ -785,3 +867,16 @@ void MainWindow::on_le_limit_editingFinished()
     int size = atoi(limitSize.toStdString().c_str());
     Q_EMIT SIG_updateLimitSize(size);
 }
+
+
+void MainWindow::on_pb_store_clicked()
+{
+    ui->sw_page->setCurrentWidget(ui->page_story);
+}
+
+
+void MainWindow::on_pb_hsz_clicked()
+{
+    ui->sw_page->setCurrentWidget(ui->page_rubsh);
+}
+

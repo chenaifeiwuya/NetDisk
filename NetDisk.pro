@@ -19,12 +19,14 @@ SOURCES += \
     main.cpp \
     maindialog.cpp \
     mainwindow.cpp \
+    mygameitem.cpp \
     mytablewidgetitem.cpp
 
 HEADERS += \
     ckernel.h \
     maindialog.h \
     mainwindow.h \
+    mygameitem.h \
     mytablewidgetitem.h
 
 FORMS += \
